@@ -1,0 +1,112 @@
+<html>
+    <head>
+        <title>jstweet</title>
+    	<meta name="viewport" content="initial-scale=1, user-scalable=no" />
+
+        <!-- Include JS -->
+        <script type="text/javascript">
+            // Load script file dynamically - compress with Reducisaurus if remote, direct load if localhost/file
+            //   string   url      - Relative URL of the script file to load : skins/justice.js
+            //   function callback - function to call on completion          : function ()
+            function app_load_script(url, callback) {
+                // URLs
+                var reducisaurus = "http://reducisaurus.appspot.com/js?url=";
+
+                // Create scripts
+                var head = document.getElementsByTagName("head")[0];
+                var script = document.createElement("script");
+
+                // Check if localhost/file else compress using Reducisaurus
+                if (window.location.hostname != "" && window.location.hostname != "localhost") {
+                    url = reducisaurus + window.location.href.replace(/\\/g,'/').replace(/\/[^\/]*$/, '/') + url;
+                }
+
+                // Load script URLs
+                script.src = url;
+
+                // Load into DOM
+                head.appendChild(script);
+
+                // Run callback function
+                if (typeof(callback) == "function") callback();
+            }
+
+            // Include files
+            app_load_script("lib.js");
+            app_load_script("app.js");
+        </script>
+    </head>
+    <body>
+        <!-- Main content area -->
+        <div id="theme_div"></div>
+
+        <!-- IFrame for Twitter interactions -->
+        <iframe id="iframe_id" name="iframe_id" style="display: none;"></iframe>
+
+        <!-- Application Templates -->
+        <div id="app_templates" style="display: none;">
+            <!-- Updating -->
+            <textarea id="update_tpl">
+                <html>
+                    <body>
+                        <form id="<%= form_id %>" method="POST" action="<%= action %>.xml">
+                            <input type="text" name="status" id="status" value="<%= status %>"></input>
+                            <input type="text" name="in_reply_to_status_id" id="in_reply_to_status_id" value="<%= in_reply_to_status_id %>"></input>
+                        </form>
+                    </body>
+                </html>
+            </textarea>
+
+            <!-- Status - Destroy, Retweet, Favorite, Unfavorite -->
+            <textarea id="status_action_tpl">
+                <html>
+                    <body>
+                        <form id="<%= form_id %>" method="POST" action="<%= action %>/<%= tweet_id %>.xml">
+                        </form>
+                    </body>
+                </html>
+            </textarea>
+
+            <!-- Settings -->
+            <textarea id="settings_tpl">
+                <!-- Template HTML -->
+                <form action="#" method="POST" onsubmit="return app_save_settings(this);">
+                    <table>
+                        <tr>
+                            <td></td>
+                            <td><b>Application Settings</b></td>
+                        </tr>
+                        <% for (key in app_user_settings) { %>
+                            <tr>
+                                <td align="right"><% if ("desc" in app_user_settings[key]) { %><%= app_user_settings[key]["desc"] %><% } %> : </td>
+                                <td>
+                                    <% if ("options" in app_user_settings[key]) { %>
+                                        <select id="<%= key %>" name="<%= key %>">
+                                        <% for (i = 0; i < app_user_settings[key]["options"].length; i++) { %>
+                                            <option value="<%= app_user_settings[key]["options"][i] %>"
+                                                <% if (app_user_settings[key]["value"] == i) { %>
+                                                    selected="selected"
+                                                <% } %>
+                                            ><%= app_user_settings[key]["options"][i] %></option>
+                                        <% } %>
+                                        </select>
+                                    <% } else { %>
+                                        <input id="<%= key %>" name="<%= key %>" type="text" value="<%= app_user_settings[key]["value"] %>"></input>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% } %>
+                        <tr>
+                            <td></td>
+                            <td><input type="submit" value="Save Settings"></input></td>
+                        </tr>
+                    </table>
+                </form>
+            </textarea>
+        </div>
+
+        <!-- Theme Templates -->
+        <div id="theme_templates" style="display: none;">
+        </div>
+	</body>
+</html>

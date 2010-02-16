@@ -1,0 +1,134 @@
+            <!-- Theme init template -->
+            <textarea id="theme_init_tpl">
+                <!-- Template JS -->
+                <script type="text/javascript">
+                   	theme_init();
+                </script>
+
+                <!-- Template HTML -->
+                <div id="theme_contents_div"></div>
+            </textarea>
+
+            <!-- Theme contents template -->
+            <textarea id="theme_contents_tpl">
+                <!-- Onload JS -->
+                <script type="text/javascript">
+             		// Call onload
+                	theme_onload();
+                </script>
+
+                <!-- Template CSS -->
+                <style>
+                    body,input,textarea,td,select { font-family: Verdana; font-size: 10px; line-height: 150%; }
+                    span,form { display: inline; }
+                    a { text-decoration: none; font-size: 9px; color: <%= app_user_settings["theme_main_color"]["value"] %>; }
+                    span.name { display: inline-block; 
+                        <% if (app_user_settings["mobile_device"]["value"] == 0) { %>
+                            width: 110px; text-align: right;
+                        <% } %>
+                    }
+                    span.hidden { display: none; }
+                    span#error { color: red; }
+                    hr.navi { height: 4px; background: <%= app_user_settings["theme_main_color"]["value"] %>; }
+                    hr.tweet { font-size: 1px; margin-left: 0; text-align: left; height: 1px; border: 0; background: #F0F0FF; }
+                    div.favorite { color: <%= app_user_settings["theme_fav_color"]["value"] %>; }
+                    div.highlight { color: <%= app_user_settings["theme_high_color"]["value"] %>; }
+                    div.action { position: absolute; border: 1px solid <%= app_user_settings["theme_main_color"]["value"] %>; background: white; padding: 5px; }
+                    img.left { float: left; margin: 0 10px 0 0; padding: 5px; border: 1px solid <%= app_user_settings["theme_main_color"]["value"] %>; }
+                </style>
+
+                <!-- Template HTML -->
+                <a href="#" onclick="show_menu();return false;" id="menu_a">Menu</a>&nbsp;&nbsp;
+                <a href="#" onclick="show_post();return false;" id="post_a">Post</a>&nbsp;&nbsp;
+                <span id="error"></span>
+                <hr id="top_hr" class="navi"/>
+                <div id="profile_details_div" style="display: none;"/>
+            </textarea>
+
+            <!-- List of tweets -->
+            <!-- BUG: same IDs for tweets in home and profile pages -->
+            <textarea id="theme_tweets_tpl">
+                <% for (i = 0; i < tweets.length; i++) { %>
+                    <div class="tweet<% if (tweets[i].favorited == true) { %> favorite<% } %>" id="<%= tweets[i].id %>">
+                        <span class="hidden" id="t<%= tweets[i].id %>">
+                            <%= tweets[i].text_orig %>
+                        </span>
+                        <span class="name" id="n<%= tweets[i].id %>">
+                            <a id="a<%= tweets[i].id %>" href="#" onclick="show_actions('<%= tweets[i].id %>');return false;"><%= tweets[i].user.screen_name %></a>
+                        </span>
+                        <% if (app_user_settings["mobile_device"]["value"] == 0) { %>&nbsp;<% } else { %> : <% } %>
+                        <span
+                            <% if (app_user_settings["mobile_device"]["value"] == 0) { %>
+                                onMouseOver="$('#i<%= tweets[i].id %>').show();" onMouseOut="$('#i<%= tweets[i].id %>').hide();"
+                            <% } %>
+                            ><%= tweets[i].text %>
+                            <% if (app_user_settings["mobile_device"]["value"] == 0) { %>
+                                <span class="hidden" id="i<%= tweets[i].id %>">
+                                    - <a target=_blank href="http://twitter.com/<%= tweets[i].user.screen_name %>/status/<%= tweets[i].id %>"><%= tweets[i].created_at %></a> 
+                                        from <%= tweets[i].source %>
+                                </span>
+                            <% } %>
+                        </span>
+                        <br/>
+                        <% if (app_user_settings["mobile_device"]["value"] == 1) { %>
+                            <hr class="tweet"/>
+                        <% } %>
+                    </div>
+                <% } %>
+                <% if (tweets.length != 0 && app_user_settings["mobile_device"]["value"] == 0) { %>
+                    <hr class="tweet" width="1000px;"/>
+                <% } %>
+                <% if (type != "newer") { %>
+                    <a href="#" onclick="load_more('older');$(this).fadeOut().remove();return false;">Older ---&gt;</a>
+                <% } %>
+            </textarea>
+
+            <!-- List of tweet actions -->
+            <textarea id="tweet_actions_tpl">
+                <div id="tweet_actions_div" class="action" style="text-align: center; left: <%= left %>px; top: <%= top %>px;">
+                    <a href="#" onclick="load_profile('<%= screen_name %>');return false;">Profile</a><br/>
+                    <a href="#" onclick="reply('<%= tweet_id %>');return false;">Reply</a><br/>
+                    <a href="#" onclick="retweet('<%= tweet_id %>');return false;">Retweet</a><br/>
+                    <a href="#" onclick="old_retweet('<%= tweet_id %>');return false;">Quote</a><br/>
+                    <% if (is_favorite == false) { %>
+                        <a href="#" onclick="favorite('<%= tweet_id %>');return false;">Favorite</a><br/>
+                    <% } else { %>
+                        <a href="#" onclick="unfavorite('<%= tweet_id %>');return false;">Unfavorite</a><br/>
+                    <% } %>
+                    <% if (screen_name == tw_user) { %>
+                        <a href="#" onclick="destroy('<%= tweet_id %>');return false;">Delete</a>
+                    <% } %>
+                </div>
+            </textarea>
+
+            <!-- App menu -->
+            <textarea id="menu_tpl">
+            	<div id="menu_div" class="action" style="text-align: center; left: <%= left %>px; top: <%= top %>px;"> 
+	                <a href="#" onclick="load('home', true);return false;">Home</a><br/>
+	                <a href="#" onclick="load('replies', true);return false;">Replies</a><br/>
+	                <a href="#" onclick="load_profile(tw_user);return false;">Profile</a><br/>
+	                <a href="#" onclick="load_settings_page();return false;">Settings</a>
+                </div>
+            </textarea>    
+            
+            <!-- Post -->
+            <textarea id="post_tpl">
+            	<div id="post_div" class="action" style="left: <%= left %>px; top: <%= top %>px;">
+	                <form action="#" onsubmit="process_update();return false;">
+	                    &lt;textarea id="update" rows="3" cols="45" onkeyup="update_length();"&gt;&lt;/textarea&gt;
+	                    <input type="hidden" id="in_reply_to_status_id"></input><br/>
+	                    <span id="update_len">140</span>&nbsp;&nbsp;
+	                    <a href="#" onclick="process_update();return false;">Post</a>&nbsp;&nbsp;
+	                    <a href="#" onclick="clear_post();return false;">Clear</a>
+	                </form>
+                </div>
+            </textarea>
+            
+            <!-- Profile details page -->
+            <textarea id="profile_details_tpl">
+            	<img class="left" src="<%= user.profile_image_url %>"></img>
+            	<a href="<%= user.url %>" target=_blank><%= user.name %></a> aka <a href="http://twitter.com/<%= user.screen_name %>" target=_blank><%= user.screen_name %></a> from <%= user.location %><br/>
+            	<%= user.statuses_count %> tweets, <%= user.followers_count %> followers, following <%= user.friends_count %><% if (user.following == true) { %> including you<% } %><br/>
+	            <br/>
+            	<br/>
+            </textarea>
