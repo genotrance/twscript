@@ -93,7 +93,7 @@ function app_save_settings(form) {
     });
 
     // Save settings in browser
-    $.cookie('jstweet_user_settings', $.toJSON(settings), {expires: 365});
+    $.cookie('twscript_user_settings', $.toJSON(settings), {expires: 365});
 
     // Reinit application
     app_init();
@@ -104,7 +104,7 @@ function app_save_settings(form) {
 
 // Load user settings from cookie
 function app_load_settings() {
-    settings = $.evalJSON($.cookie('jstweet_user_settings'));
+    settings = $.evalJSON($.cookie('twscript_user_settings'));
     if (settings != null) {
         $.each(settings, function (key, val) {
             app_set_setting(key, val);

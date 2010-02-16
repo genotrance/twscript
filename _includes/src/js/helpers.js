@@ -44,7 +44,7 @@ function app_load_skin() {
     skin = app_get_setting("skin");
 
     // Load HTML templates
-    $("#theme_templates").load("skins/" + skin + ".html", {}, function () {
+    $("#theme_templates").load("skins/" + skin + ".html", null, function () {
         // Load JS
         app_load_script("skins/" + skin + ".js", function () {
             // Load main application template
