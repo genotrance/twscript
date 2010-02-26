@@ -4,37 +4,8 @@
     	<meta name="viewport" content="initial-scale=1, user-scalable=no" />
 
         <!-- Include JS -->
-        <script type="text/javascript">
-            // Load script file dynamically - compress with Reducisaurus if remote, direct load if localhost/file
-            //   string   url      - Relative URL of the script file to load : skins/justice.js
-            //   function callback - function to call on completion          : function ()
-            function app_load_script(url, callback) {
-                // URLs
-                var reducisaurus = "http://reducisaurus.appspot.com/js?url=";
-
-                // Create scripts
-                var head = document.getElementsByTagName("head")[0];
-                var script = document.createElement("script");
-
-                // Check if localhost/file else compress using Reducisaurus
-                if (window.location.hostname != "" && window.location.hostname != "localhost") {
-                    url = reducisaurus + window.location.href.replace(/\\/g,'/').replace(/\/[^\/]*$/, '/') + url;
-                }
-
-                // Load script URLs
-                script.src = url;
-
-                // Load into DOM
-                head.appendChild(script);
-
-                // Run callback function
-                if (typeof(callback) == "function") callback();
-            }
-
-            // Include files
-            app_load_script("lib.js");
-            app_load_script("app.js");
-        </script>
+        <script type="text/javascript" src="lib.js"></script>
+        <script type="text/javascript" src="app.js"></script>
     </head>
     <body>
         <!-- Main content area -->

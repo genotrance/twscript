@@ -95,8 +95,9 @@ function app_save_settings(form) {
     // Save settings in browser
     $.cookie('twscript_user_settings', $.toJSON(settings), {expires: 365});
 
-    // Reinit application
-    app_init();
+    // Reinit application if from form
+    if (form != undefined)
+	    app_init();
 
     // Return false to stop reload
     return false;

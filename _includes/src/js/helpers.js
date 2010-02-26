@@ -46,7 +46,7 @@ function app_load_skin() {
     // Load HTML templates
     $("#theme_templates").load("skins/" + skin + ".html", function () {
         // Load JS
-        app_load_script("skins/" + skin + ".js", function () {
+    	$.getScript("skins/" + skin + ".js", function () {
             // Load main application template
             app_render_template("theme_init", "theme", {});
         });
