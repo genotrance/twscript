@@ -1,5 +1,5 @@
 ////
-// Twitter Public API
+// Twitter API
 
 // Twitter URL
 var tw_base_url = [
@@ -7,7 +7,7 @@ var tw_base_url = [
     "http://nest.onedd.net/api"
 ];
 
-// Twitter user information - populated by tw_load_user()
+// Twitter user information - populated by app_load_user()
 var tw_user = "";
 var tw_user_info = {};
 
@@ -36,7 +36,8 @@ var tw_api_map = {
     users_show: "users/show", 
     
     // Social graph
-    followers: "followers/ids"
+    followers: "followers/ids",
+    friendships_show: "friendships/show"
 };
 
 // Replacements
@@ -159,35 +160,6 @@ function tw_filter_gen(filter) {
 
     return filter.replace(/^([a-zA-Z]+)[ ]*([a-zA-Z0-9_\.]+)[ ]*((?:not)?)[ ]*((?:like)?)[ ]*([a-zA-Z0-9]+)$/,
         "op: $1, fl: $2, not: $3, like: $4, pat: $5");
-}
-
-// Get authenticated or specified user's information from Twitter
-//   function callback    - function to call on completion : function ()
-//   string   screen_name - screen_name whose info to load : name
-function tw_load_user(callback, screen_name) {
-	if (screen_name == undefined) {
-		// Get authenticated user's info
-	    tw_get("verify_credentials", function (data, status) {
-	        tw_user = data.screen_name;
-	        tw_user_info[data.screen_name.toLowerCase()] = $.extend(true, {}, data);
-	        
-	    	// Execute callback
-	    	if (callback != undefined && typeof(callback) == "function") {
-	    		callback();
-	    	}	        
-	    });
-	} else {
-		// Get specified user's info
-		tw_get("users_show", function (data, status) {
-			tw_user_info[data.screen_name.toLowerCase()] = $.extend(true, {}, data);
-		
-			// Execute callback
-			if (callback != undefined && typeof(callback) == "function") {
-				callback();
-			}
-		}, {screen_name: screen_name});
-	}
-	
 }
 
 // Get data from Twitter

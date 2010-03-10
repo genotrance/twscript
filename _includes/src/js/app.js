@@ -1,6 +1,5 @@
 ////
-// PUBLIC API
-// ----------
+// Base application functions
 
 // Initialization function
 function app_init() {
@@ -11,7 +10,7 @@ function app_init() {
     app_mobile_detect();
 
     // Load user information from Twitter
-    tw_load_user();
+    app_load_user();
 
     // Load skin
     app_load_skin();

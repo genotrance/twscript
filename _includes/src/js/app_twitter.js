@@ -1,6 +1,5 @@
 ////
-// PUBLIC API
-// ----------
+// Status specific Twitter functions
 
 // Post update to Twitter including replies and old style retweets
 //   string status                - Text to send as update             : "Hello World"

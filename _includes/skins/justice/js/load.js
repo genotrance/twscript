@@ -67,31 +67,23 @@ function load_settings_page() {
 
 // Load profile page
 function load_profile(screen_name) {
-	// Lowercase screen_name for consistency
-	screen_name = screen_name.toLowerCase();
-	
-	// Load user info if not already available
-	if (!(screen_name in tw_user_info)) {
-		$("#error").html("Loading...");
-		tw_load_user(
-			function () {
-				if (screen_name in tw_user_info) {
-					$("#error").html("");
-					load_profile(screen_name);
-				}
-			}, 
-			screen_name
-		);
-		return;
-	}
-	
-	// Clear and load recent tweets
-	$("#profile_div").html("");
-	load("profile", true, {screen_name: screen_name});
+	// Load profile
+	$("#error").html("Loading...");
+	app_get_user(
+		function () {
+			// Clear message
+			$("#error").html("");
+			
+			// Clear and load recent tweets
+			$("#profile_div").html("");
+			load("profile", true, {screen_name: screen_name});
 
-	// Render profile details template
-	out = app_output_template("profile_details", {user: tw_user_info[screen_name]});
-	$("#profile_details_div").html(out).show();
+			// Render profile details template
+			out = app_output_template("profile_details", {user: tw_user_info[screen_name]});
+			$("#profile_details_div").html(out).show();
+		},
+		screen_name
+	);	
 }
 
 // Get tweet ID for specified method - newer or older type
